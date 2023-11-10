@@ -1,10 +1,32 @@
+def median(secuence, lo, mid, hi):
+	if secuence[lo] <= secuence[mid]:
+		if secuence[mid] <= secuence[hi]:
+			return mid
+	else:
+		if secuence[lo] <= secuence[hi]:
+			return lo
+	return hi
+
+def insertion_sort(secuence, start_index, end_index):
+	for i in range(start_index, end_index + 1):
+		cur = secuence[i]
+		j = i - 1
+
+		while j >= 0 and secuence[j] > cur:
+			secuence[j + 1] = secuence[j]
+			j -= 1
+		secuence[j + 1] = cur
+
 def quick_sort(secuence, lo_index=None, hi_index=None):
 	if lo_index is None:
 		lo_index = 0
 	if hi_index is None:
 		hi_index = len(secuence) - 1
-	if lo_index >= hi_index:
+	if hi_index - lo_index <= 32:
+		insertion_sort(secuence, lo_index, hi_index)
 		return None
+	mid = median(secuence, lo_index, lo_index+(hi_index - lo_index)//2, hi_index)
+	secuence[lo_index], secuence[mid] = secuence[mid], secuence[lo_index]
 	pivot = partition(secuence, lo_index, hi_index)
 	quick_sort(secuence, lo_index, pivot - 1)
 	quick_sort(secuence, pivot + 1, hi_index)
