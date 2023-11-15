@@ -1,9 +1,9 @@
 function insertionSort(secuence, start, end) {
   for (let i = start + 1; i <= end; i++) {
-    let cur = secuence[i];
+    const cur = secuence[i];
     let j = i - 1;
 
-    while (j >= 0 && secuence[j] > cur) {
+    while (j >= start && secuence[j] > cur) {
       secuence[j + 1] = secuence[j];
       j--;
     }
@@ -25,34 +25,39 @@ function median(secuence, lo, mid, hi) {
 }
 
 function tukeyMedian(secuence, lo, hi) {
-  const part = Math.floor(secuence.length / 3);
-  const medianA = median(secuence, lo, Math.floor((lo + part) / 2), lo + part);
+  const part = Math.floor((hi - lo) / 3);
+  const medianA = median(secuence, lo, Math.floor(lo + part / 2), lo + part);
   const medianB = median(
     secuence,
     lo + part + 1,
-    Math.floor((lo + part * 3 + 1) / 2),
+    Math.floor(lo + (part * 3 + 1) / 2),
     lo + part * 2
   );
   const medianC = median(
     secuence,
-    Math.floor(lo + part * 2 + 1),
-    Math.floor((lo + part * 5) / 2 + 1),
+    Math.floor(lo + (part * 2 + 1)),
+    Math.floor(lo + (part * 5) / 2 + 1),
     hi
   );
   return median(secuence, medianA, medianB, medianC);
 }
 
-function quickSort(arr, start = 0, end = arr.length - 1) {
-  if (end - start <= 32) {
-    insertionSort(arr, start, end);
-    return;
-  }
-  let mid = tukeyMedian(arr, start, Math.floor(start + (end - start) / 2), end);
-  swap(arr, start, mid);
-  const pivot = partition(arr, start, end);
-  quickSort(arr, start, pivot - 1);
-  quickSort(arr, pivot + 1, end);
+function swap(arr, i, j) {
+  let temp = arr[i];
+  arr[i] = arr[j];
+  arr[j] = temp;
 }
+
+// function partition(support, secuence, start, end) {
+//   let i = start;
+//   for (let j = start; j < end; j++) {
+//     if (secuence[j] < support) {
+//       swap(secuence, i++, j);
+//     }
+//   }
+//   swap(secuence, i, end - 1);
+//   return [i, i + 1];
+// }
 
 function partition(arr, start, end) {
   const supportElement = arr[start];
@@ -70,15 +75,20 @@ function partition(arr, start, end) {
     swap(arr, i++, j--);
   }
   swap(arr, start, j);
-  return j;
+  return [j, j + 1];
 }
 
-function swap(array, i, j) {
-  let temp = array[i];
-  array[i] = array[j];
-  array[j] = temp;
+function quickSort(secuence, start = 0, end = secuence.length - 1) {
+  if (end - start <= 32) {
+    insertionSort(secuence, start, end);
+    return;
+  }
+  const med = tukeyMedian(secuence, start, end);
+  swap(secuence, start, med);
+  const [p1, p2] = partition(secuence, start, end);
+  quickSort(secuence, start, p1 - 1);
+  quickSort(secuence, p2, end);
 }
 
-const array = [0, 5, -2, 7, 3, -2, -7, 66, 45];
-quickSort(array);
-console.log(array);
+quickSort(secuence);
+console.log(secuence.join(" "));
